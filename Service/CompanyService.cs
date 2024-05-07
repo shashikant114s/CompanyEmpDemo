@@ -20,17 +20,9 @@ namespace Service
 
         public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
         {
-            try
-            {
-                var companies = repository.Company.GetAllCompaies(trackChanges);
-                var companiesDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
-                return companiesDto;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Something went worng in the {nameof(GetAllCompanies)} service method {ex}");
-                throw;
-            }
+            var companies = repository.Company.GetAllCompaies(trackChanges);
+            var companiesDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
+            return companiesDto;
         }
     }
 }

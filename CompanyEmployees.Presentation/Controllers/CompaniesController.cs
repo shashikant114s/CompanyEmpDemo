@@ -5,7 +5,7 @@ namespace CompanyEmployees.Presentation.Controllers
 {
     [Route("api/companies")]
     [ApiController]
-    public class CompaniesController:ControllerBase
+    public class CompaniesController : ControllerBase
     {
         private readonly IServiceManager service;
 
@@ -13,16 +13,9 @@ namespace CompanyEmployees.Presentation.Controllers
 
         [HttpGet]
         public IActionResult GetCompanies()
-        {
-            try
-            {
-                var companies = service.CompanyService.GetAllCompanies(false);
-                return Ok(companies);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal service error");
-            }
+        { 
+            var companies = service.CompanyService.GetAllCompanies(false);
+            return Ok(companies);
         }
     }
 }
