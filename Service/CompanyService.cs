@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -23,6 +24,16 @@ namespace Service
             var companies = repository.Company.GetAllCompaies(trackChanges);
             var companiesDto = mapper.Map<IEnumerable<CompanyDto>>(companies);
             return companiesDto;
+        }
+
+        public CompanyDto GetCompany(Guid companyId, bool trackChanges)
+        {
+            var company = repository.Company.GetCompany(companyId, trackChanges);
+            if (company == null)
+                throw new CompanyNotFoundException(companyId);
+
+            var companyDto = mapper.Map<CompanyDto>(company);
+            return companyDto;
         }
     }
 }
