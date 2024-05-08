@@ -17,5 +17,9 @@ namespace Contracts
                 .SingleOrDefault();
 
         public void CreateCompany(Company company) => Create(company);
+
+        public IEnumerable<Company> GetByIds(IEnumerable<Guid> companyIds, bool trackChanges) => 
+            FindByCondition(x => companyIds.Contains(x.Id), trackChanges)
+                .ToList();
     }
 }
