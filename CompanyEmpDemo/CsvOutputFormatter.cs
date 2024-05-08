@@ -1,5 +1,4 @@
-﻿using Entities.Models;
-using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 using Shared.DataTransferObjects;
 using System.Text;
@@ -17,7 +16,7 @@ namespace CompanyEmpDemo
 
         protected override bool CanWriteType(Type? type)
         {
-            if(typeof(CompanyDto).IsAssignableFrom(type) || typeof(IEnumerable<CompanyDto>).IsAssignableFrom(type))
+            if (typeof(CompanyDto).IsAssignableFrom(type) || typeof(IEnumerable<CompanyDto>).IsAssignableFrom(type))
                 return base.CanWriteType(type);
 
             return false;
@@ -28,7 +27,7 @@ namespace CompanyEmpDemo
             var response = context.HttpContext.Response;
             var buffer = new StringBuilder();
 
-            if(context.Object is IEnumerable<CompanyDto>)
+            if (context.Object is IEnumerable<CompanyDto>)
             {
                 foreach (var company in (IEnumerable<CompanyDto>)context.Object)
                 {
