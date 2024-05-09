@@ -80,5 +80,14 @@ namespace Service
 
             return (companyCollectionToReturn, ids);
         }
+
+        public void DeleteCompany(Guid companyId, bool trackChanges)
+        {
+            var company = repository.Company.GetCompany(companyId, trackChanges);
+            if(company is null)
+                throw new CompanyNotFoundException(companyId);
+            repository.Company.DeleteCompany(company);
+            repository.Save();
+        }
     }
 }

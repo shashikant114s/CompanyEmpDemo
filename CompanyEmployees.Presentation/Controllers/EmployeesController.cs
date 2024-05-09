@@ -39,5 +39,12 @@ namespace CompanyEmployees.Presentation.Controllers
                 empId = employeeToReturn.Id
             }, employeeToReturn);
         }
+
+        [HttpDelete("{id:guid}")]
+        public IActionResult DeleteEmployeeForCompany(Guid companyId, Guid id)
+        {
+            service.EmployeeService.DeleteEmployeeForCompany(companyId, id, false);
+            return NoContent();
+        }
     }
 }

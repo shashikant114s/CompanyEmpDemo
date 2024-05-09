@@ -21,5 +21,7 @@ namespace Contracts
         public IEnumerable<Company> GetByIds(IEnumerable<Guid> companyIds, bool trackChanges) => 
             FindByCondition(x => companyIds.Contains(x.Id), trackChanges)
                 .ToList();
+
+        public void DeleteCompany(Company company) => Delete(company);
     }
 }
