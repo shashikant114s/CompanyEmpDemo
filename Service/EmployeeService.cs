@@ -2,10 +2,9 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
-using Microsoft.VisualBasic;
 using Service.Contracts;
 using Shared.DataTransferObjects;
-using System.Security.Cryptography;
+using Shared.RequestFeatures;
 
 namespace Service
 {
@@ -23,20 +22,21 @@ namespace Service
         }
 
 
-        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId, bool trackChanges)
+        public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId, EmployeeParamerters employeeParamerters, bool trackChanges)
         {
             await GetCompanyIfExist(companyId, trackChanges);
 
-            var empFromDb = await repository.Employee.GetEmployeesAsync(companyId, trackChanges);
-            var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(empFromDb);
-            return employeesDto;
+            var employeeWithMetaData = await repository.Employee.GetEmployeesAsync(companyId, employeeParamerters, trackChanges);
+            //var empFromDb = await repository.Employee.GetEmployeesAsync(companyId, employeeParamerters, trackChanges);
+            var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(employeeWithMetaData);
+            return (employeesDto, employeeWithMetaData.MetaData);
         }
 
         public async Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid employeeId, bool trackChanges)
         {
             await GetCompanyIfExist(companyId, trackChanges);
 
-            var employeeDb = await GetEmployeeIfExist(companyId, employeeId, trackChanges) ;
+            var employeeDb = await GetEmployeeIfExist(companyId, employeeId, trackChanges);
 
             var employee = mapper.Map<EmployeeDto>(employeeDb);
             return employee;

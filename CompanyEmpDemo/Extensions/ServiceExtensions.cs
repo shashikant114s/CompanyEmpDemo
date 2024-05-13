@@ -9,15 +9,16 @@ namespace CompanyEmpDemo.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureCores(this IServiceCollection services) => 
+        public static void ConfigureCores(this IServiceCollection services) =>
             services.AddCors(option =>
             {
                 option.AddPolicy("CoresPolicy", builder =>
                 {
-                    builder.AllowAnyOrigin()
+                     builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader().WithExposedHeaders("X-Pagination");
                 });
+              
             });
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
