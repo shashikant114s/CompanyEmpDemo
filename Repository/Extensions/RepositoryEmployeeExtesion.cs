@@ -1,4 +1,6 @@
 ﻿using Entities.Models;
+using Repository.Extensions.Utility;
+using System.Linq.Dynamic.Core;
 
 namespace Repository.Extensions
 {
@@ -9,12 +11,25 @@ namespace Repository.Extensions
 
         public static IQueryable<Employee> Search(this IQueryable<Employee> employees, string searchTerm)
         {
-            if(string.IsNullOrWhiteSpace(searchTerm)) 
+            if (string.IsNullOrWhiteSpace(searchTerm))
                 return employees;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();
             return employees.Where(e => e.Name.ToLower().Contains(lowerCaseTerm));
         }
 
+
+        public static IQueryable<Employee> Short(this IQueryable<Employee> employees, string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return employees.OrderBy(e => e.Name);
+
+            string orderQuery = OrderQueryBuilder.CreateOrderQuery<Employee>(orderByQueryString);
+
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return employees.OrderBy(e => e.Name);
+
+            return employees.OrderBy(orderQuery);
+        }
     }
 }

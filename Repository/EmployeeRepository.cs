@@ -18,7 +18,7 @@ namespace Repository
             var employees = await FindByCondition(e => e.CompanyId.Equals(companyId), trackChanges)
                   .FilterEmployee(employeeParamerters.MinAge, employeeParamerters.MaxAge)
                   .Search(employeeParamerters.SearchTerm)
-                  .OrderBy(e => e.Name)
+                  .Short(employeeParamerters.OrderBy)
                   .Skip((employeeParamerters.PageNumber - 1) * employeeParamerters.PageSize)
                   .Take(employeeParamerters.PageSize)
                   .ToListAsync();
