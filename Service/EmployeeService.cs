@@ -5,6 +5,7 @@ using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using Shared.RequestFeatures;
+using System.Dynamic;
 
 namespace Service
 {
@@ -13,16 +14,18 @@ namespace Service
         private readonly IRepositoryManager repository;
         private readonly ILoggerManager logger;
         private readonly IMapper mapper;
+        private readonly IDataShaper<EmployeeDto> dataShaper;
 
-        public EmployeeService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public EmployeeService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IDataShaper<EmployeeDto> dataShaper)
         {
             this.repository = repository;
             this.logger = logger;
             this.mapper = mapper;
+            this.dataShaper=dataShaper;
         }
 
 
-        public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId, EmployeeParamerters employeeParamerters, bool trackChanges)
+        public async Task<(IEnumerable<ExpandoObject> employees, MetaData metaData)> GetEmployeesAsync(Guid companyId, EmployeeParamerters employeeParamerters, bool trackChanges)
         {
             if (!employeeParamerters.ValidAgeRange)
                 throw new MaxAgeRangeBadrequestException();
@@ -32,7 +35,8 @@ namespace Service
             var employeeWithMetaData = await repository.Employee.GetEmployeesAsync(companyId, employeeParamerters, trackChanges);
             //var empFromDb = await repository.Employee.GetEmployeesAsync(companyId, employeeParamerters, trackChanges);
             var employeesDto = mapper.Map<IEnumerable<EmployeeDto>>(employeeWithMetaData);
-            return (employeesDto, employeeWithMetaData.MetaData);
+            var shapedData = dataShaper.ShapeData(employeesDto, employeeParamerters.Fields);
+            return (shapedData, employeeWithMetaData.MetaData);
         }
 
         public async Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid employeeId, bool trackChanges)
