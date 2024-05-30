@@ -1,9 +1,9 @@
 ﻿namespace Shared.RequestFeatures
 {
-    public class EmployeeParamerters : RequestParameters
+    public class EmployeeParameters : RequestParameters
     {
 
-        public EmployeeParamerters() => OrderBy = "name";
+        public EmployeeParameters() => OrderBy = "name";
             
   
         public uint MinAge {  get; set; }

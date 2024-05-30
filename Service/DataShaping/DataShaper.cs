@@ -1,72 +1,85 @@
 ﻿using Contracts;
-using System.Dynamic;
+using Entities.Models;
 using System.Reflection;
 
-namespace Service.DataShaping
+namespace Service.DataShaping;
+
+public class DataShaper<T> : IDataShaper<T> where T : class
 {
-    public class DataShaper<T> : IDataShaper<T> where T : class
+    public PropertyInfo[] Properties { get; set; }
+
+    public DataShaper()
     {
-        public PropertyInfo[] Properties { get; set; }
+        Properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+    }
 
-        public DataShaper()
-        {
-            Properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        }
+    public IEnumerable<ShapedEntity> ShapeData(IEnumerable<T> entities, string fieldsString)
+    {
+        var requiredProperties = GetRequiredProperties(fieldsString);
 
-        public IEnumerable<ExpandoObject> ShapeData(IEnumerable<T> entities, string fieldsString)
-        {
-            var requiredProperties = GetRequiresProperties(fieldsString);
-            return FetchData(entities, requiredProperties);
-        }
+        return FetchData(entities, requiredProperties);
+    }
 
-        public ExpandoObject ShapeData(T entity, string fieldsString)
-        {
-            var requiredProperties = GetRequiresProperties(fieldsString);
-            return FetchDataForEntity(entity, requiredProperties);
-        }
+    public ShapedEntity ShapeData(T entity, string fieldsString)
+    {
+        var requiredProperties = GetRequiredProperties(fieldsString);
 
-        private IEnumerable<PropertyInfo> GetRequiresProperties(string fieldsString)
+        return FetchDataForEntity(entity, requiredProperties);
+    }
+
+    private IEnumerable<PropertyInfo> GetRequiredProperties(string fieldsString)
+    {
+        var requiredProperties = new List<PropertyInfo>();
+
+        if (!string.IsNullOrWhiteSpace(fieldsString))
         {
-            var requiredProperties = new List<PropertyInfo>();
-            if(!string.IsNullOrEmpty(fieldsString))
+            var fields = fieldsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var field in fields)
             {
-                var fields = fieldsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                foreach( var field in fields) 
-                {
-                    var property = Properties.FirstOrDefault(pi => pi.Name.Equals(field.Trim(), StringComparison.InvariantCultureIgnoreCase));
-                    if(property == null)
-                        continue;
-                    requiredProperties.Add(property);
-                }
-            }
-            else
-            {
-                requiredProperties = Properties.ToList();
-            }
-            return requiredProperties;
-        }
+                var property = Properties
+                    .FirstOrDefault(pi => pi.Name.Equals(field.Trim(), StringComparison.InvariantCultureIgnoreCase));
 
-        private IEnumerable<ExpandoObject> FetchData(IEnumerable<T> entities, IEnumerable<PropertyInfo> requiredProperties)
+                if (property == null)
+                    continue;
+
+                requiredProperties.Add(property);
+            }
+        }
+        else
         {
-            var shapeData = new List<ExpandoObject>();
-            foreach( var entity in entities) 
-            {
-                var shapedObject = FetchDataForEntity(entity, requiredProperties);
-                shapeData.Add(shapedObject);
-            }
-            return shapeData;
+            requiredProperties = Properties.ToList();
         }
 
-        private ExpandoObject FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
+        return requiredProperties;
+    }
+
+    private IEnumerable<ShapedEntity> FetchData(IEnumerable<T> entities, IEnumerable<PropertyInfo> requiredProperties)
+    {
+        var shapedData = new List<ShapedEntity>();
+
+        foreach (var entity in entities)
         {
-            var shapeData = new ExpandoObject();
-
-            foreach (var property in requiredProperties)
-            {
-                var objectPropertyValue = property.GetValue(entity);
-                shapeData.TryAdd(property.Name, objectPropertyValue);
-            }
-            return shapeData;
+            var shapedObject = FetchDataForEntity(entity, requiredProperties);
+            shapedData.Add(shapedObject);
         }
+
+        return shapedData;
+    }
+
+    private ShapedEntity FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
+    {
+        var shapedObject = new ShapedEntity();
+
+        foreach (var property in requiredProperties)
+        {
+            var objectPropertyValue = property.GetValue(entity);
+            shapedObject.Entity.TryAdd(property.Name, objectPropertyValue);
+        }
+
+        var objectProperty = entity.GetType().GetProperty("Id");
+        shapedObject.Id = (Guid)objectProperty.GetValue(entity);
+
+        return shapedObject;
     }
 }
