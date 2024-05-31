@@ -54,12 +54,14 @@ namespace CompanyEmpDemo.Extensions
                 if(systemTextJsonOutputFormatter != null)
                 {
                     systemTextJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.phiapi.hateoas+json");
+                    systemTextJsonOutputFormatter.SupportedMediaTypes.Add("application/vnd.phiapi.apiroot+json");
                 }
 
                 var xmlOutputFormatter = config.OutputFormatters.OfType<XmlDataContractSerializerOutputFormatter>()?.FirstOrDefault();
                 if(xmlOutputFormatter != null)
                 {
                     xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.phiapi.hateoas+xml");
+                    xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.phiapi.apiroot+xml");
                 }
             });
         }
