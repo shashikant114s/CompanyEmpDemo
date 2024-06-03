@@ -8,6 +8,8 @@ using Repository;
 using Service;
 using Service.Contracts;
 using Marvin.Cache.Headers;
+using AspNetCoreRateLimit;
+
 
 namespace CompanyEmpDemo.Extensions
 {
@@ -92,6 +94,25 @@ namespace CompanyEmpDemo.Extensions
             {
                 validationOpt.MustRevalidate = true;
             });
+        }
+
+        public static void ConfigureRatelimitingOptions(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>
+            {
+                new RateLimitRule
+                {
+                    Endpoint = "*",
+                    Limit = 3,
+                    Period = "5m"
+                }
+            };
+
+            services.Configure<IpRateLimitOptions>(opt => { opt.GeneralRules = rateLimitRules; });
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
         }
     }
 }

@@ -12,7 +12,7 @@
     "CompanyEmpDemo": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/companies",
       "applicationUrl": "https://localhost:7001;http://localhost:7000",
       "environmentVariables": {
