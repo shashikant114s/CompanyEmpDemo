@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace CompanyEmpDemo.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240603082226_CreatingIdentityTables")]
+    partial class CreatingIdentityTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,7 +98,7 @@ namespace CompanyEmpDemo.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7068bd76-2934-4c79-bbb8-281647c9b70a"),
+                            Id = new Guid("13c15614-4351-4957-9b44-18d197dcc230"),
                             Age = 34,
                             CompanyId = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
                             Name = "Denish Makadiya",
@@ -103,7 +106,7 @@ namespace CompanyEmpDemo.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9c6fc155-00c8-4137-9303-e5c6f04fbd02"),
+                            Id = new Guid("c769e243-8dc9-48c9-8520-39220fff94f6"),
                             Age = 26,
                             CompanyId = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
                             Name = "Pawan Rajput",
@@ -111,7 +114,7 @@ namespace CompanyEmpDemo.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9614d68b-104d-41e9-bed6-e27dda1d990a"),
+                            Id = new Guid("7f8320fd-b16d-4565-a596-4b1515eb94a2"),
                             Age = 25,
                             CompanyId = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
                             Name = "Sachin Tomar",
@@ -119,7 +122,7 @@ namespace CompanyEmpDemo.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2af884bd-b406-4eab-b4d5-e512863f6791"),
+                            Id = new Guid("2ac9566e-7846-4f4f-917e-293e5057ebd1"),
                             Age = 28,
                             CompanyId = new Guid("3d490a70-94ce-4d15-9494-5248280c2ce3"),
                             Name = "Rahul Tripathi",
@@ -225,22 +228,6 @@ namespace CompanyEmpDemo.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "68563157-e351-41ed-a7be-3208efab7169",
-                            ConcurrencyStamp = "e9384ace-24c4-4709-9acb-e228c61e5987",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "6bb139e3-2282-4020-9f04-3ca908578e79",
-                            ConcurrencyStamp = "208f609a-80d0-48a6-9e29-cabad14ea53a",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

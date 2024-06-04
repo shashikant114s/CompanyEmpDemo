@@ -40,6 +40,14 @@ builder.Services.ConfigureVersioning();
 builder.Services.ConfigureResponseCaching();
 builder.Services.ConfigureHttpCacheHeaders();
 
+builder.Services.AddMemoryCache();
+builder.Services.ConfigureRatelimitingOptions();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+
+
 builder.Services.AddControllers(config =>
 {
     config.RespectBrowserAcceptHeader = true;
@@ -51,9 +59,7 @@ builder.Services.AddControllers(config =>
 .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
 builder.Services.AddCustomMediaTypes();
-builder.Services.AddMemoryCache();
-builder.Services.ConfigureRatelimitingOptions();
-builder.Services.AddHttpContextAccessor();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 var app = builder.Build();
 
@@ -74,7 +80,7 @@ app.UseCors("CorsPolicy");
 app.UseResponseCaching();
 app.UseHttpCacheHeaders();
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
