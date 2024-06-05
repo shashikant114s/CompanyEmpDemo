@@ -60,6 +60,7 @@ builder.Services.AddControllers(config =>
 
 builder.Services.AddCustomMediaTypes();
 builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.AddJwtConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
