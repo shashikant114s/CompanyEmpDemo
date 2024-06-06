@@ -61,6 +61,7 @@ builder.Services.AddControllers(config =>
 builder.Services.AddCustomMediaTypes();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
 
@@ -83,6 +84,13 @@ app.UseHttpCacheHeaders();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Phi Test API v1");
+    s.SwaggerEndpoint("/swagger/v2/swagger.json", "Phi Test API v2");
+});
 
 app.MapControllers();
 
